@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:task_manager/app.dart';
 import 'package:task_manager/data/model/response_object.dart';
 import 'package:task_manager/presentation/controllers/auth_controllers.dart';
+import 'package:task_manager/presentation/screens/auth/sign_in_screen.dart';
 
 class NetworkCaller {
-
   static Future<ResponseObject> getRequest(String url) async {
     try {
       log(url);
@@ -22,7 +24,7 @@ class NetworkCaller {
         return ResponseObject(
             isSuccess: true, statusCode: 200, responseBody: decodedResponse);
       } else if (response.statusCode == 401) {
-        //_moveToSignIn();
+        _moveToSignIn();
         return ResponseObject(
             isSuccess: false,
             statusCode: response.statusCode,
@@ -44,7 +46,8 @@ class NetworkCaller {
   }
 
   static Future<ResponseObject> postRequest(
-      String url, Map<String, dynamic> body, {bool fromSignIn = false}) async {
+      String url, Map<String, dynamic> body,
+      {bool fromSignIn = false}) async {
     try {
       log(url);
       log(body.toString());
@@ -72,7 +75,7 @@ class NetworkCaller {
             errorMessage: 'Email/password is incorrect. Try again',
           );
         } else {
-          //_moveToSignIn();
+          _moveToSignIn();
           return ResponseObject(
               isSuccess: false,
               statusCode: response.statusCode,
@@ -94,6 +97,11 @@ class NetworkCaller {
     }
   }
 
-
-
+  static void _moveToSignIn() async {
+    await AuthController.clearUserData();
+    Navigator.pushAndRemoveUntil(
+        TaskManager.navigatorKey.currentState!.context,
+        MaterialPageRoute(builder: (context) => SignInScreen()),
+        (route) => false);
+  }
 }

@@ -25,7 +25,7 @@ PreferredSizeWidget get profileAppBar {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  AuthController.userData?.fullName ,style: TextStyle(
+                  AuthController.userData?.fullName ?? '',style: TextStyle(
                     fontSize: 16,
                     color: Colors.white
                 ),),
