@@ -7,8 +7,6 @@ import 'package:task_manager/presentation/controllers/auth_controllers.dart';
 import 'package:task_manager/presentation/screens/auth/email_verification_screen.dart';
 import 'package:task_manager/presentation/screens/auth/sign_up_screen.dart';
 import 'package:task_manager/presentation/screens/main_bottom_nav_screen.dart';
-
-
 import 'package:task_manager/presentation/widget/background_widget.dart';
 import 'package:task_manager/presentation/widget/snacbar_message.dart';
 
