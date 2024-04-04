@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:task_manager/data/service/network_caller.dart';
 import 'package:task_manager/data/utility/urls.dart';
 import 'package:task_manager/presentation/controllers/add_new_task_screen_controller.dart';
+import 'package:task_manager/presentation/screens/main_bottom_nav_screen.dart';
 import 'package:task_manager/presentation/widget/background_widget.dart';
 import 'package:task_manager/presentation/widget/profile_bar.dart';
 import 'package:task_manager/presentation/widget/snacbar_message.dart';
@@ -21,6 +22,8 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
   final TextEditingController _descriptionTEController = TextEditingController();
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   bool _shouldRefreshNewTaskList =false;
+  static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 
 
 
@@ -43,8 +46,8 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
               padding: const EdgeInsets.all(16.0),
               child: Form(
                 key: _formkey,
-                child: GetBuilder<AddNewTaskScreenController>(
-                  builder: (addNewTaskScreenController) {
+                child: GetBuilder<AddNewTaskController>(
+                  builder: (addNewTaskController) {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -84,22 +87,56 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
                         SizedBox(
                             width: double.infinity,
                             child: Visibility(
-                              visible: addNewTaskScreenController.inProgress == false,
+                              visible: addNewTaskController.addNewTaskInProgress == false,
                               replacement: Center(child: CircularProgressIndicator(),),
-                              child: GetBuilder(
-                                builder: (context) {
-                                  return ElevatedButton(
+                              child: ElevatedButton(
 
-                                    onPressed: (){
-                                      if(_formkey.currentState!.validate()){
-                                         //_addNewTask();
-                                        addNewTaskScreenController.addNewTask(context);
-                                      }
-                                    },
-                                    child: Icon(Icons.arrow_circle_right_rounded),);
-                                }
+                                onPressed: (){
+                                  if(_formkey.currentState!.validate()){
+                                     //_addNewTask();
+                                   // addNewTaskController.addNewTask(_titleTEController.text.trim(),
+                                    // _descriptionTEController.text.trim());
+                                    addNewTaskController.addNewTask(_titleTEController.text.trim(), _descriptionTEController.text).then(
+                                          (result) {
+                                        if (result == true) {
+                                          Get.offAll(const MainBottomNavScreen());
+                                          Get.snackbar(
+                                            'Congratulations!',
+                                            'Add New Task Successful.',
+                                            colorText: Colors.black,
+                                            messageText: const Text(
+                                              'Add New Task Successful.',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w400,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          );
+                                        } else {
+                                          Get.snackbar(
+                                            'Ops!',
+                                            'Add New Task Failed! Try Again.',
+                                            colorText: Colors.black,
+                                            messageText: const Text(
+                                              'Add New Task Failed! Try Again',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w400,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                    );
+                                  }
+
+                                },
+                                child: Icon(Icons.arrow_circle_right_rounded),
                               ),
-                            )),
+                            ),
+                        ),
                       ],
                     );
                   }

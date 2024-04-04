@@ -26,7 +26,12 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
 
   @override
   void initState() {
-    _getDataFromApi();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+
+      _getDataFromApi();
+
+    });
+
     super.initState();
   }
 

@@ -10,8 +10,8 @@ class ControllerBinder extends Bindings{
   void dependencies() {
     // TODO: implement dependencies
     Get.lazyPut(() => SignInController());
-    Get.lazyPut(() => CountTaskByStatusController());
-    Get.lazyPut(() => NewTaskController());
-    Get.lazyPut(() => AddNewTaskScreenController());
+    Get.lazyPut(() => CountTaskByStatusController(), fenix: true);
+    Get.lazyPut(() => NewTaskController(),fenix: true);
+    Get.lazyPut(() => AddNewTaskController(),fenix: true);
   }
 }
