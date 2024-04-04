@@ -1,4 +1,6 @@
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:task_manager/app.dart';
 import 'package:task_manager/presentation/controllers/auth_controllers.dart';
@@ -18,7 +20,13 @@ PreferredSizeWidget get profileAppBar {
       },
       child: Row(
         children: [
-          CircleAvatar(),
+          CircleAvatar(
+            backgroundImage: (AuthController.userData?.photo ?? null) != null
+                ? MemoryImage(base64Decode(AuthController.userData!.photo!
+                .split('data:image/png;base64,')
+                .last))
+                : null,
+          ),
           SizedBox(width: 8,),
           Expanded(
             child: Column(
@@ -49,3 +57,5 @@ PreferredSizeWidget get profileAppBar {
     ),
   );
 }
+
+

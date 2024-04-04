@@ -1,0 +1,18 @@
+class TaskCountByStatusData {
+  String? sId;
+  int? sum;
+
+  TaskCountByStatusData({this.sId, this.sum});
+
+  TaskCountByStatusData.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
+    sum = json['sum'];
+  }
+
+  // Map<String, dynamic> toJson() {
+  //   final Map<String, dynamic> data =  Map<String, dynamic>();
+  //   data['_id'] = this.sId;
+  //   data['sum'] = this.sum;
+  //   return data;
+  // }
+}

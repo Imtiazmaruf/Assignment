@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/service/network_caller.dart';
+import 'package:task_manager/data/utility/urls.dart';
 import 'package:task_manager/presentation/screens/auth/sign_in_screen.dart';
 import 'package:task_manager/presentation/widget/background_widget.dart';
+import 'package:task_manager/presentation/widget/snacbar_message.dart';
 
 class SetPasswordScreen extends StatefulWidget {
-  const SetPasswordScreen({super.key});
+  const SetPasswordScreen({super.key, this.email, this.otp});
+  final email;
+  final otp;
 
   @override
   State<SetPasswordScreen> createState() => _SetPasswordScreenState();
@@ -14,6 +19,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
   final TextEditingController _passwordTEController = TextEditingController();
   final TextEditingController _confirmPasswordTEController = TextEditingController();
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+  bool _setPasswordInProgress = false;
 
 
   @override
@@ -39,7 +45,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
 
                   SizedBox(height: 16,),
                   TextFormField(
-                    controller: _passwordTEController,
+                    controller: _confirmPasswordTEController,
                     decoration: InputDecoration(
                       hintText: 'Password',
                     ),
@@ -54,8 +60,16 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
 
                   SizedBox(
                       width: double.infinity,
-                      child: ElevatedButton(onPressed: (){},
-                        child: Text('Confirm'),)),
+                      child: Visibility(
+                        visible: _setPasswordInProgress == false,
+                        replacement: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        child: ElevatedButton(onPressed: (){
+                          _setPassword();
+                        },
+                          child: Text('Confirm'),),
+                      )),
                   SizedBox(height: 48,),
 
                   Row(
@@ -80,11 +94,31 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
 
     );
   }
+  Future<void> _setPassword() async{
+    _setPasswordInProgress = true;
+    setState(() {});
+    Map<String, dynamic> inputparams = {
+      "email": widget.email,
+      "OTP": widget.otp,
+      "password": _confirmPasswordTEController.text
+    };
+    final response = await NetworkCaller.postRequest(
+        Urls.recoverResetPass, inputparams);
+    _setPasswordInProgress = false;
+    if(response.isSuccess){
+      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+          builder: (context) => SignInScreen()), (route) => false);
+    }else{
+      _setPasswordInProgress= false;
+      setState(() {});
+      showSnacbarMessage(context, response.errorMessage.toString());
+    }
+  }
+
   @override
   void dispose() {
     _passwordTEController.dispose();
     _confirmPasswordTEController.dispose();
-
     super.dispose();
   }
 }

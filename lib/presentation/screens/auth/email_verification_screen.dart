@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/service/network_caller.dart';
+import 'package:task_manager/data/utility/urls.dart';
 import 'package:task_manager/presentation/screens/auth/pin_verification_screen.dart';
 import 'package:task_manager/presentation/screens/auth/sign_up_screen.dart';
 import 'package:task_manager/presentation/widget/background_widget.dart';
+import 'package:task_manager/presentation/widget/snacbar_message.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
   const EmailVerificationScreen({super.key});
@@ -14,6 +17,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
 
   final TextEditingController _emailTEController = TextEditingController();
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+  bool _emailRecoverInProgress = false;
 
 
   @override
@@ -51,9 +55,15 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
 
                   SizedBox(
                       width: double.infinity,
-                      child: ElevatedButton(onPressed: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=> PinVerificationScreen()));
-                      }, child: Icon(Icons.arrow_circle_right_rounded),)),
+                      child: Visibility(
+                        visible: _emailRecoverInProgress == false,
+                        replacement: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        child: ElevatedButton(onPressed: (){
+                          _emailRecover();
+                        }, child: Icon(Icons.arrow_circle_right_rounded),),
+                      )),
                   SizedBox(height: 48,),
 
                   Row(
@@ -83,5 +93,29 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
     _emailTEController.dispose();
 
     super.dispose();
+  }
+  Future<void> _emailRecover() async{
+    _emailRecoverInProgress = true;
+    setState(() {});
+    final response = await NetworkCaller.getRequest(
+        Urls.recoverVerifyEmail(_emailTEController.text.trim()));
+    _emailRecoverInProgress = false;
+    if(response.isSuccess){
+     if(!mounted){
+       return;
+     }
+     Navigator.push(
+         context, MaterialPageRoute(
+         builder: (context)=> PinVerificationScreen(email: _emailTEController.text.trim(),)));
+
+    }else{
+      _emailRecoverInProgress = false;
+      setState(() {});
+      if(!mounted){
+        return;
+      }
+      showSnacbarMessage(context, response.errorMessage.toString());
+
+    }
   }
 }

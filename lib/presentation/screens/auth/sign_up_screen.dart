@@ -137,7 +137,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        child: Text('Sign Up'),)
+                        child: Text('Sign In'),)
                     ],
                   )
                 ],
@@ -149,31 +149,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-//   Future<void> _signUp() async{
-//     _isRegistrasionInProgress = true;
-//     setState(() {});
-//     Map<String,dynamic> inputParams ={
-//       "email": _emailTEController.text.trim(),
-//       "firstName": _firstNameTEController.text.trim(),
-//       "lastName": _lastNameTEController.text.trim(),
-//       "mobile":_mobileTEController.text.trim(),
-//       "password":_passwordTEController.text,
-//     };
-//     final  response = await NetworkCaller.postRequest(Urls.registration, inputParams);
-//     _isRegistrasionInProgress = false;
-//     setState(() {});
-//     if(response.isSuccess){
-//       if(mounted){
-//         showSnacbarMessage(context, 'Registrasion Success! Log In');
-//         Navigator.pop(context);
-//       }
-//     }else{
-//       if(mounted){
-//         showSnacbarMessage(context, 'Registrasion failled! Try again',true);
-//       }
-//     }
-//
-// }
 
   Future<void> _signUp() async {
     _isRegistrasionInProgress = true;
